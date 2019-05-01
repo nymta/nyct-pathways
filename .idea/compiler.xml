@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="nyct-pathways-transformer-cli" />
+        <module name="nyct-pathways-transformer" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="nyct-pathways" target="1.5" />
+      <module name="nyct-pathways-transformer" target="1.8" />
+      <module name="nyct-pathways-transformer-cli" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="nyct-pathways-transformer" options="-Xlint:all" />
+      <module name="nyct-pathways-transformer-cli" options="-Xlint:all" />
+    </option>
+  </component>
+</project>
