@@ -233,7 +233,7 @@ public class NyctPathwaysTransformStrategy implements GtfsTransformStrategy {
             s.setLocationType(Stop.LOCATION_TYPE_ENTRANCE_EXIT);
             s.setLat(e.getLatitude());
             s.setLon(e.getLongitude());
-            s.setName(e.getDescription());
+            s.setName(e.getDescription().trim());
             s.setParentStation(stationComplex.getId().getId());
 
             return Stream.of(s);
