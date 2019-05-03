@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
+import com.google.common.collect.SetMultimap;
 import com.nyct.dos.tpc.pathways.model.*;
 import com.nyct.dos.tpc.pathways.types.FareControlAreaType;
 import com.nyct.dos.tpc.pathways.types.NodeType;
@@ -26,12 +27,13 @@ import org.onebusaway.gtfs_transformer.services.TransformContext;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.google.common.collect.ImmutableListMultimap.flatteningToImmutableListMultimap;
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
+import static com.google.common.collect.ImmutableSetMultimap.flatteningToImmutableSetMultimap;
 import static com.nyct.dos.tpc.pathways.types.NodeType.*;
 import static com.nyct.dos.tpc.pathways.types.PathwayType.*;
 
@@ -79,19 +81,19 @@ public class NyctPathwaysTransformStrategy implements GtfsTransformStrategy {
                 int stationComplexId = stationComplex.getStationComplexId();
 
                 Stop sc = new Stop();
-                sc.setId(new AgencyAndId("MTA NYCT", String.format("MR%03d", stationComplexId)));
+                sc.setId(new AgencyAndId(transformContext.getDefaultAgencyId(), String.format("MR%03d", stationComplexId)));
                 sc.setName(stationComplex.getStationName().trim());
                 sc.setLocationType(Stop.LOCATION_TYPE_STATION);
                 dao.saveOrUpdateEntity(sc);
 
-                final ListMultimap<Pair<NodeType, Integer>, Stop> stopsForNodes = pd.getConnectionsByComplex().get(stationComplexId)
+                final SetMultimap<Pair<NodeType, Integer>, Stop> stopsForNodes = pd.getConnectionsByComplex().get(stationComplexId)
                         .stream()
                         .flatMap(connection -> Stream.of(
                                 ImmutablePair.of(connection.getConnectFromType(), connection.getConnectFromId()),
                                 ImmutablePair.of(connection.getConnectToType(), connection.getConnectToId())
                         ))
                         .distinct()
-                        .collect(flatteningToImmutableListMultimap(
+                        .collect(flatteningToImmutableSetMultimap(
                                 Function.identity(),
                                 p -> this.gtfsStopForNode(stationComplexId, p, sc)
                         ));
@@ -99,8 +101,8 @@ public class NyctPathwaysTransformStrategy implements GtfsTransformStrategy {
                 stopsForNodes.values().forEach(dao::saveOrUpdateEntity);
 
                 for (Connection connection : pd.getConnectionsByComplex().get(stationComplexId)) {
-                    final List<Stop> fromStops = stopsForNodes.get(ImmutablePair.of(connection.getConnectFromType(), connection.getConnectFromId()));
-                    final List<Stop> toStops = stopsForNodes.get(ImmutablePair.of(connection.getConnectToType(), connection.getConnectToId()));
+                    final Set<Stop> fromStops = stopsForNodes.get(ImmutablePair.of(connection.getConnectFromType(), connection.getConnectFromId()));
+                    final Set<Stop> toStops = stopsForNodes.get(ImmutablePair.of(connection.getConnectToType(), connection.getConnectToId()));
 
                     for (Stop fromStop : fromStops) {
                         for (Stop toStop : toStops) {
