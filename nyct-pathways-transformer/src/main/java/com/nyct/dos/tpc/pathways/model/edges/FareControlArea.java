@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.edges;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -11,8 +11,7 @@ import java.util.EnumSet;
 @Data
 public class FareControlArea {
 
-    public static final String FILENAME = "FARE_C_REC.TXT";
-
+    public static final String FILENAME = "FARE_C_REC.csv";
 
     @JsonProperty("STATION_ID")
     int stationComplexId;

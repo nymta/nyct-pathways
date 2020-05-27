@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,15 +6,15 @@ import lombok.Data;
 @Data
 public class Mezzanine {
 
-    public static final String FILENAME = "MEZZANINE_REC.TXT";
+    public static final String FILENAME = "MEZZANINE_REC.csv";
 
     @JsonProperty("STATION_ID")
-    private int stationComplexId;
+    int stationComplexId;
 
     @JsonProperty("M00")
-    private int mezzanineId;
+    int mezzanineId;
 
     @JsonProperty("MEZZ_ID")
-    private String description;
+    String description;
 
 }

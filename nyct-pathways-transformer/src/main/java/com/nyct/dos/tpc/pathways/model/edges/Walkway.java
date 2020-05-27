@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.edges;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,18 +6,21 @@ import lombok.Data;
 @Data
 public class Walkway {
 
-    public static final String FILENAME = "WALKWAY_REC.TXT";
+    public static final String FILENAME = "WALKWAY_REC.csv";
 
     @JsonProperty("STATION_ID")
-    private int stationComplexId;
+    int stationComplexId;
+
+    @JsonProperty("W00")
+    Integer walkwayId;
 
     @JsonProperty("WALKWAY_ID")
-    private String walkwayId;
+    String nyctWalkwayId;
 
     @JsonProperty("WALKWAY_DESCRIPTION")
-    private String description;
+    String description;
 
     @JsonProperty("WR_ACCESSIBLE")
-    private int accessible;
+    int accessible;
 
 }

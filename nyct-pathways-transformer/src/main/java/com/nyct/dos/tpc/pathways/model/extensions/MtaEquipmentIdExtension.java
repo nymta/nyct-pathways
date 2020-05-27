@@ -1,10 +1,10 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.extensions;
 
 import lombok.Data;
 import org.onebusaway.csv_entities.schema.annotations.CsvField;
 
 @Data
-public class MtaEquipmentId {
+public class MtaEquipmentIdExtension {
     @CsvField(optional = true)
-    private String mtaEquipmentId;
+    String mtaEquipmentId;
 }

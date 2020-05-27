@@ -7,6 +7,10 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.ListMultimap;
 import com.nyct.dos.tpc.pathways.model.*;
+import com.nyct.dos.tpc.pathways.model.edges.*;
+import com.nyct.dos.tpc.pathways.model.nodes.Entrance;
+import com.nyct.dos.tpc.pathways.model.nodes.Mezzanine;
+import com.nyct.dos.tpc.pathways.model.nodes.Platform;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -25,7 +29,6 @@ class PathwaysLoader {
     private final File basePath;
 
     private static final CsvSchema bootstrapSchema = CsvSchema.emptySchema()
-            .withColumnSeparator('\t')
             .withHeader();
 
     private static final ObjectMapper mapper = new CsvMapper();
@@ -44,8 +47,7 @@ class PathwaysLoader {
                 .readValues(new File(basePath, StationComplex.FILENAME));
 
         List<StationComplex> stationComplexes =
-                iterator
-                        .readAll()
+                iterator.readAll()
                         .stream()
                         .collect(toImmutableList());
 
@@ -58,8 +60,7 @@ class PathwaysLoader {
                 .readValues(new File(basePath, Connection.FILENAME));
 
         ListMultimap<Integer, Connection> connections =
-                iterator
-                        .readAll()
+                iterator.readAll()
                         .stream()
                         .filter(c -> c.getStationComplexId() != 0 && c.getConnectionId() != 0 && c.getPathwayType() != null)
                         .collect(toImmutableListMultimap(
@@ -80,8 +81,7 @@ class PathwaysLoader {
                 .readValues(new File(basePath, filename));
 
         Map<Pair<Integer, T1>, T2> loadedEntities =
-                iterator
-                        .readAll()
+                iterator.readAll()
                         .stream()
                         .filter(entityFilter)
                         .collect(toImmutableMap(
@@ -111,9 +111,9 @@ class PathwaysLoader {
                 e -> ImmutablePair.of(e.getStationComplexId(), e.getStairId()));
     }
 
-    private Map<Pair<Integer, String>, Walkway> loadWalkways() throws IOException {
+    private Map<Pair<Integer, Integer>, Walkway> loadWalkways() throws IOException {
         return loadEntities(Walkway.class, Walkway.FILENAME,
-                e -> e.getStationComplexId() != 0 && e.getWalkwayId() != null && !e.getWalkwayId().isEmpty(),
+                e -> e.getStationComplexId() != 0 && e.getWalkwayId() != 0,
                 e -> ImmutablePair.of(e.getStationComplexId(), e.getWalkwayId()));
     }
 

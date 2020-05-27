@@ -1,0 +1,5 @@
+{"op": "transform", "class": "com.nyct.dos.tpc.pathways.NyctPathwaysTransformStrategy", "base_path": "Pathways Export", "platform_stop_mapping_file": "GTFS - Platform Stop IDs - Final.csv", "stations_file":  "Stations.csv", "station_complexes_file":  "StationComplexes.csv"}
+
+{"op":"remove", "match":{"file":"routes.txt", "agency_id": "MTA NYCT"}}
+{"op":"remove", "match":{"file":"calendar.txt", "service_id":  "m/.*/"}}
+{"op":"remove", "match":{"file":"calendar_dates.txt", "service_id":  "m/.*/"}}

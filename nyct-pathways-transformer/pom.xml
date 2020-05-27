@@ -12,6 +12,7 @@
     <artifactId>nyct-pathways-transformer</artifactId>
 
     <dependencies>
+        <!--
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-gtfs</artifactId>
@@ -25,6 +26,27 @@
         <dependency>
             <groupId>org.onebusaway</groupId>
             <artifactId>onebusaway-csv-entities</artifactId>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
+            <artifactId>onebusaway-gtfs</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
+            <artifactId>onebusaway-gtfs-transformer</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.nymta</groupId>
+            <artifactId>onebusaway-csv-entities</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onebusaway</groupId>
+            <artifactId>onebusaway-collections</artifactId>
         </dependency>
 
         <dependency>
@@ -60,7 +82,11 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
         </dependency>
     </dependencies>
 

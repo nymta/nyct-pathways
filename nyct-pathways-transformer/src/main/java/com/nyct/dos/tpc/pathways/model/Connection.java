@@ -8,62 +8,64 @@ import com.nyct.dos.tpc.pathways.types.PathwayType;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties({"ADDITIONAL_STAIRCASES", "ADDITIONAL_STAIRCASES2", "ADDITIONAL_STAIRCASES3"})
+@JsonIgnoreProperties(value={"ADDITIONAL_STAIRCASES", "ADDITIONAL_STAIRCASES2", "ADDITIONAL_STAIRCASES3", "Dir",
+        "mechnical_stair_count", "traversal_time", "is_bidirectional", "STAIR_ID_1", "S_COUNT_1",
+        "STAIR_ID_2", "S_COUNT_2", "STAIR_ID_3", "S_COUNT_3", "STAIR_ID_4","S_COUNT_4", "stair_count"})
 public class Connection {
 
-    public static final String FILENAME = "CONNECTIONS_REC.TXT";
+    public static final String FILENAME = "CONNECTIONS_REC.csv";
 
     @JsonProperty("STATION_ID")
-    private int stationComplexId;
+    int stationComplexId;
 
     @JsonProperty("PATH_COUNTER")
-    private int connectionId;
+    int connectionId;
 
     @JsonProperty("CONNECT_FROM_TYPE")
-    private NodeType connectFromType;
+    NodeType connectFromType;
     @JsonProperty("CONNECT_TO_TYPE")
-    private NodeType connectToType;
+    NodeType connectToType;
 
     @JsonProperty("CONNECT_FROM_ID")
-    private int connectFromId;
+    int connectFromId;
     @JsonProperty("CONNECT_TO_ID")
-    private int connectToId;
+    int connectToId;
 
     @JsonProperty("PATHWAY_TYPE_CONNECT")
-    private PathwayType pathwayType;
+    PathwayType pathwayType;
 
     @JsonProperty("PATHWAYID")
-    private String pathwayId;
+    String pathwayId;
     @JsonProperty("STAIR2ID")
-    private int stair2Id;
+    int stair2Id;
     @JsonProperty("STAIR3ID")
-    private int stair3Id;
+    int stair3Id;
     @JsonProperty("STAIR4ID")
-    private int stair4Id;
+    int stair4Id;
 
     @JsonProperty("SIGN_POSTED_AS_FROM")
-    private String signpostedAsFrom;
+    String signpostedAsFrom;
     @JsonProperty("SIGN_POSTED_AS_TO")
-    private String signpostedAsTo;
+    String signpostedAsTo;
 
     @JsonProperty("LINE_BULLETS_FROM")
-    private String lineBulletsFrom;
+    String lineBulletsFrom;
     @JsonProperty("LINE_BULLETS_TO")
-    private String lineBulletsTo;
+    String lineBulletsTo;
 
     @JsonProperty("DIRECTIONAL_ARROW_FROM")
-    private DirectionalArrow directionalArrowFrom;
+    DirectionalArrow directionalArrowFrom;
     @JsonProperty("DIRECTIONAL_ARROW_TO")
-    private DirectionalArrow directionalArrowTo;
+    DirectionalArrow directionalArrowTo;
 
     @JsonProperty("ADDITIONAL_INSTRUCTIONS_FROM")
-    private String additionalInstructionsFrom;
+    String additionalInstructionsFrom;
     @JsonProperty("ADDITIONAL_INSTRUCTIONS_TO")
-    private String additionalInstructionsTo;
+    String additionalInstructionsTo;
 
     @JsonProperty("ELEVATOR_BUTTON_FROM")
-    private String elevatorButtonFrom;
+    String elevatorButtonFrom;
     @JsonProperty("ELEVATOR_BUTTON_TO")
-    private String elevatorButtonTo;
+    String elevatorButtonTo;
 
 }

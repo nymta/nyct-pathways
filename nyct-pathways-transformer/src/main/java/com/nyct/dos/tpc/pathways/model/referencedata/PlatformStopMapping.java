@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.referencedata;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,12 +9,12 @@ import lombok.Data;
 public class PlatformStopMapping {
 
     @JsonProperty("Complex")
-    private int stationComplexId;
+    int stationComplexId;
 
     @JsonProperty("Platform")
-    private String platformId;
+    String platformId;
 
     @JsonProperty("GTFS.Stop.ID")
-    private String gtfsStopId;
+    String gtfsStopId;
 
 }

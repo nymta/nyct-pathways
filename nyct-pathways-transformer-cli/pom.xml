@@ -18,14 +18,20 @@
             <version>${project.version}</version>
         </dependency>
 
-
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>org.onebusaway</groupId>
+            <artifactId>onebusaway-gtfs-transformer-cli</artifactId>
+        </dependency>
+        -->
+
+        <dependency>
+            <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
             <artifactId>onebusaway-gtfs-transformer-cli</artifactId>
         </dependency>
 
@@ -35,7 +41,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>

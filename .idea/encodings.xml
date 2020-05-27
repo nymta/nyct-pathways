@@ -4,5 +4,6 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nyct-pathways-transformer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nyct-pathways-transformer-cli" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nyct-pathways-transformer/src/main/java" charset="UTF-8" />
   </component>
 </project>

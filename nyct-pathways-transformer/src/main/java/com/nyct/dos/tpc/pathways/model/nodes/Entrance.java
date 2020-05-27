@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.nodes;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,22 +6,21 @@ import lombok.Data;
 @Data
 public class Entrance {
 
-    public static final String FILENAME = "ENTRANCE_REC.TXT";
+    public static final String FILENAME = "ENTRANCE_REC.csv";
 
     @JsonProperty("STATION_ID")
-    private int stationComplexId;
+    int stationComplexId;
 
     @JsonProperty("ENTRANCE_ID")
-    private int entranceId;
+    int entranceId;
 
     @JsonProperty("ENTRANCE_DESCRIBE")
-    private String description;
+    String description;
 
     @JsonProperty("LATITUDE")
-    private double latitude;
+    double latitude;
 
     @JsonProperty("LONGITUDE")
-    private double longitude;
-
+    double longitude;
 
 }

@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways.model;
+package com.nyct.dos.tpc.pathways.model.edges;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -6,15 +6,15 @@ import lombok.Data;
 @Data
 public class Elevator {
 
-    public static final String FILENAME = "ELEVATOR_REC.TXT";
+    public static final String FILENAME = "ELEVATOR_REC.csv";
 
     @JsonProperty("STATION_ID")
-    private int stationComplexId;
+    int stationComplexId;
 
     @JsonProperty("ELEV_00")
-    private int elevatorId;
+    int elevatorId;
 
     @JsonProperty("ELEVATOR_ID")
-    private String nyctElevatorId;
+    String nyctElevatorId;
 
 }
