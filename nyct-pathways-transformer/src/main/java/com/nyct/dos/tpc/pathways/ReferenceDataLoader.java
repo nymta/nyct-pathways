@@ -5,22 +5,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.Streams;
 import com.nyct.dos.tpc.pathways.model.referencedata.PlatformStopMapping;
 import com.nyct.dos.tpc.pathways.model.referencedata.ReferenceStation;
 import com.nyct.dos.tpc.pathways.model.referencedata.ReferenceStationComplex;
+import lombok.experimental.UtilityClass;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.CoordinateXY;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.PrecisionModel;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMultimap;
+import static org.locationtech.jts.geom.PrecisionModel.FLOATING;
 
+@UtilityClass
+@SuppressWarnings("UnstableApiUsage")
 public class ReferenceDataLoader {
 
     private final static CsvSchema BOOTSTRAP_SCHEMA = CsvSchema.emptySchema()
@@ -28,42 +40,41 @@ public class ReferenceDataLoader {
 
     private final static ObjectMapper MAPPER = new CsvMapper();
 
-    static Multimap<Pair<Integer, String>, String> loadPlatformStopMapping(File platformStopMappingFile) throws IOException {
+    private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(FLOATING), 4326);
+
+    public static Multimap<Pair<Integer, String>, PlatformStopMapping> loadPlatformStopMapping(File platformStopMappingFile) throws IOException {
         final MappingIterator<PlatformStopMapping> iterator = MAPPER.readerFor(PlatformStopMapping.class)
                 .with(BOOTSTRAP_SCHEMA)
                 .readValues(platformStopMappingFile);
 
-        return iterator.readAll()
-                .stream()
+        return Streams.stream(iterator)
                 .collect(
                         toImmutableSetMultimap(
                                 psm -> ImmutablePair.of(psm.getStationComplexId(), psm.getPlatformId()),
-                                PlatformStopMapping::getGtfsStopId
+                                Function.identity()
                         )
                 );
     }
 
-    static Map<String, ReferenceStation> loadStationsFile(File stationsFile) throws IOException {
+    public static Map<String, ReferenceStation> loadStationsFile(File stationsFile) throws IOException {
         final MappingIterator<ReferenceStation> iterator = MAPPER.readerFor(ReferenceStation.class)
                 .with(BOOTSTRAP_SCHEMA)
                 .readValues(stationsFile);
 
-        return iterator.readAll()
-                .stream()
+        return Streams.stream(iterator)
                 .collect(toImmutableMap(ReferenceStation::getGtfsStopId, Function.identity()));
     }
 
-    static Map<Integer, ReferenceStationComplex> loadStationComplexesFile(File stationComplexesFile) throws IOException {
+    public static Map<Integer, ReferenceStationComplex> loadStationComplexesFile(File stationComplexesFile) throws IOException {
         final MappingIterator<ReferenceStationComplex> iterator = MAPPER.readerFor(ReferenceStationComplex.class)
                 .with(BOOTSTRAP_SCHEMA)
                 .readValues(stationComplexesFile);
 
-        return iterator.readAll()
-                .stream()
+        return Streams.stream(iterator)
                 .collect(toImmutableMap(ReferenceStationComplex::getStationComplexId, Function.identity()));
     }
 
-    static Map<Integer, String> buildStationComplexNames(Collection<ReferenceStation> stations, Collection<ReferenceStationComplex> stationComplexes) throws IOException {
+    public static Map<Integer, String> buildStationComplexNames(Collection<ReferenceStation> stations, Collection<ReferenceStationComplex> stationComplexes) {
         return Stream.concat(
                 stations
                         .stream()
@@ -76,6 +87,29 @@ public class ReferenceDataLoader {
         )
                 .distinct()
                 .collect(toImmutableMap(Pair::getKey, Pair::getValue));
+    }
+
+    public static Map<Integer, Point> buildStationComplexCentroids(Collection<ReferenceStation> stations, Collection<ReferenceStationComplex> stationComplexes) {
+        Collector<Point, ArrayList<Point>, Point> centroidCollector = Collector.of(
+                ArrayList::new,
+                ArrayList::add,
+                (left, right) -> {
+                    left.addAll(right);
+                    return left;
+                },
+                l -> GEOMETRY_FACTORY.createMultiPoint(l.toArray(Point[]::new)).getCentroid()
+        );
+
+        return stations.stream().collect(Collectors.groupingBy(ReferenceStation::getStationComplexId,
+
+                Collectors.mapping(s -> GEOMETRY_FACTORY.createPoint(new CoordinateXY(s.getGtfsLongitude(), s.getGtfsLatitude())),
+                        centroidCollector
+                )
+
+
+        ));
+
+
     }
 
 }

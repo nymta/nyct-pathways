@@ -2,8 +2,12 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nyct-pathways-crm/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nyct-pathways-crm/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nyct-pathways-transformer" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nyct-pathways-transformer-cli" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/nyct-pathways-transformer/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nyct-pathways-validator/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/nyct-pathways-validator/src/main/resources" charset="UTF-8" />
   </component>
 </project>

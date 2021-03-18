@@ -7,4 +7,7 @@ import org.onebusaway.csv_entities.schema.annotations.CsvField;
 public class MtaEquipmentIdExtension {
     @CsvField(optional = true)
     String mtaEquipmentId;
+
+    @CsvField(optional = true)
+    String mtaEquipmentDescription;
 }

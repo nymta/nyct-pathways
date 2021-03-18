@@ -2,8 +2,8 @@ package com.nyct.dos.tpc.pathways.model.edges;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.nyct.dos.tpc.pathways.FareControlAreaTypeConverter;
 import com.nyct.dos.tpc.pathways.types.FareControlAreaType;
+import com.nyct.dos.tpc.pathways.util.FareControlAreaTypeConverter;
 import lombok.Data;
 
 import java.util.EnumSet;

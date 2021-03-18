@@ -2,6 +2,26 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="snapshots-camsys-public-repo" />
+      <option name="name" value="snapshots-camsys-public-repo" />
+      <option name="url" value="https://repo.camsys-apps.com/snapshots/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jitpack.io" />
+      <option name="name" value="jitpack.io" />
+      <option name="url" value="https://jitpack.io" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="repo.camsys-apps.com" />
+      <option name="name" value="repo.camsys-apps.com" />
+      <option name="url" value="https://repo.camsys-apps.com/third-party/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="releases-camsys-public-repo" />
       <option name="name" value="releases-camsys-public-repo" />
       <option name="url" value="https://repo.camsys-apps.com/releases/" />
@@ -13,28 +33,8 @@
     </remote-repository>
     <remote-repository>
       <option name="id" value="central" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="https://repo.maven.apache.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="snapshots-camsys-public-repo" />
-      <option name="name" value="snapshots-camsys-public-repo" />
-      <option name="url" value="https://repo.camsys-apps.com/snapshots/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central" />
       <option name="name" value="Maven Central repository" />
       <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="jitpack.io" />
-      <option name="name" value="jitpack.io" />
-      <option name="url" value="https://jitpack.io" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="repo.camsys-apps.com" />
-      <option name="name" value="repo.camsys-apps.com" />
-      <option name="url" value="https://repo.camsys-apps.com/third-party/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="jboss.community" />

@@ -3,14 +3,24 @@ package com.nyct.dos.tpc.pathways;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.CoercionAction;
+import com.fasterxml.jackson.databind.cfg.CoercionInputShape;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ListMultimap;
-import com.nyct.dos.tpc.pathways.model.*;
+import com.google.common.collect.Streams;
+import com.nyct.dos.tpc.pathways.model.Connection;
+import com.nyct.dos.tpc.pathways.model.PathwaysData;
+import com.nyct.dos.tpc.pathways.model.StationComplex;
 import com.nyct.dos.tpc.pathways.model.edges.*;
 import com.nyct.dos.tpc.pathways.model.nodes.Entrance;
 import com.nyct.dos.tpc.pathways.model.nodes.Mezzanine;
 import com.nyct.dos.tpc.pathways.model.nodes.Platform;
+import com.nyct.dos.tpc.pathways.util.TrimStringDeserializer;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -21,68 +31,70 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableListMultimap.toImmutableListMultimap;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 
+@SuppressWarnings("UnstableApiUsage")
+@Slf4j
+@RequiredArgsConstructor
+public
 class PathwaysLoader {
     private final File basePath;
 
-    private static final CsvSchema bootstrapSchema = CsvSchema.emptySchema()
+    private static final CsvSchema BOOTSTRAP_SCHEMA = CsvSchema.emptySchema()
             .withHeader();
 
-    private static final ObjectMapper mapper = new CsvMapper();
+    private static final ObjectMapper MAPPER = new CsvMapper();
 
     static {
-        mapper.configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true);
-    }
-
-    PathwaysLoader(File basePath) {
-        this.basePath = basePath;
+        MAPPER.registerModule(
+                new SimpleModule("TrimStringModule")
+                        .addDeserializer(String.class, new TrimStringDeserializer()))
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                .coercionConfigDefaults()
+                .setAcceptBlankAsEmpty(true)
+                .setCoercion(CoercionInputShape.EmptyString, CoercionAction.AsNull);
     }
 
     private List<StationComplex> loadStationComplexes() throws IOException {
-        MappingIterator<StationComplex> iterator = mapper.readerFor(StationComplex.class)
-                .with(bootstrapSchema)
+        MappingIterator<StationComplex> iterator = MAPPER.readerFor(StationComplex.class)
+                .with(BOOTSTRAP_SCHEMA)
                 .readValues(new File(basePath, StationComplex.FILENAME));
 
-        List<StationComplex> stationComplexes =
-                iterator.readAll()
-                        .stream()
-                        .collect(toImmutableList());
-
+        List<StationComplex> stationComplexes = ImmutableList.copyOf(iterator);
         return stationComplexes;
     }
 
     private ListMultimap<Integer, Connection> loadConnections() throws IOException {
-        MappingIterator<Connection> iterator = mapper.readerFor(Connection.class)
-                .with(bootstrapSchema)
+        MappingIterator<Connection> iterator = MAPPER.readerFor(Connection.class)
+                .with(BOOTSTRAP_SCHEMA)
                 .readValues(new File(basePath, Connection.FILENAME));
 
         ListMultimap<Integer, Connection> connections =
-                iterator.readAll()
-                        .stream()
+                Streams.stream(iterator)
                         .filter(c -> c.getStationComplexId() != 0 && c.getConnectionId() != 0 && c.getPathwayType() != null)
-                        .collect(toImmutableListMultimap(
-                                Connection::getStationComplexId,
-                                Function.identity()
+                        .collect(
+                                toImmutableListMultimap(
+                                        Connection::getStationComplexId,
+                                        Function.identity()
                                 )
                         );
 
         return connections;
     }
 
-    private <T1, T2> Map<Pair<Integer, T1>, T2> loadEntities(Class<T2> cls, String filename,
-                                                             Predicate<T2> entityFilter,
-                                                             Function<T2, Pair<Integer, T1>> entityIdFunction) throws IOException {
+    private <T2> Map<Pair<Integer, Integer>, T2> loadEntities(Class<T2> cls, String filename,
+                                                              Predicate<T2> entityFilter,
+                                                              Function<T2, Pair<Integer, Integer>> entityIdFunction) throws IOException {
 
-        MappingIterator<T2> iterator = mapper.readerFor(cls)
-                .with(bootstrapSchema)
+        log.info("Loading {} from {}", cls.getName(), filename);
+
+        MappingIterator<T2> iterator = MAPPER.readerFor(cls)
+                .with(BOOTSTRAP_SCHEMA)
                 .readValues(new File(basePath, filename));
 
-        Map<Pair<Integer, T1>, T2> loadedEntities =
-                iterator.readAll()
-                        .stream()
+        Map<Pair<Integer, Integer>, T2> loadedEntities =
+                Streams.stream(iterator)
                         .filter(entityFilter)
                         .collect(toImmutableMap(
                                 entityIdFunction,
@@ -141,7 +153,7 @@ class PathwaysLoader {
                 e -> ImmutablePair.of(e.getStationComplexId(), e.getPlatformId()));
     }
 
-    PathwaysData load() throws IOException {
+    public PathwaysData load() throws IOException {
         return new PathwaysData(
                 loadStationComplexes(),
                 loadConnections(),

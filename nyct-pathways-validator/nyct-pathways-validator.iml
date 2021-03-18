@@ -11,6 +11,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="nyct-pathways-transformer" />
     <orderEntry type="library" name="Maven: org.onebusaway:onebusaway-gtfs:1.3.93" level="project" />
     <orderEntry type="library" name="Maven: org.onebusaway:onebusaway-gtfs-transformer:1.3.93" level="project" />
     <orderEntry type="library" name="Maven: org.onebusaway:onebusaway-collections:1.2.0" level="project" />
@@ -33,6 +34,10 @@
     <orderEntry type="library" name="Maven: jakarta.activation:jakarta.activation-api:1.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:4.2.1" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:6.2.3" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
+    <orderEntry type="library" name="Maven: org.locationtech.jts:jts-core:1.18.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.18" level="project" />
+    <orderEntry type="library" name="Maven: info.picocli:picocli:4.6.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:30.1-jre" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:failureaccess:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava" level="project" />
@@ -40,10 +45,8 @@
     <orderEntry type="library" name="Maven: org.checkerframework:checker-qual:3.5.0" level="project" />
     <orderEntry type="library" name="Maven: com.google.errorprone:error_prone_annotations:2.3.4" level="project" />
     <orderEntry type="library" name="Maven: com.google.j2objc:j2objc-annotations:1.3" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.11" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.26" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.18" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:20.1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.locationtech.jts:jts-core:1.18.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.11" level="project" />
+    <orderEntry type="library" scope="RUNTIME" name="Maven: org.slf4j:slf4j-simple:1.7.26" level="project" />
   </component>
 </module>

@@ -14,7 +14,9 @@
       <excludeFolder url="file://$MODULE_DIR$/diagrams" />
       <excludeFolder url="file://$MODULE_DIR$/google_transit" />
       <excludeFolder url="file://$MODULE_DIR$/pathways_out" />
+      <excludeFolder url="file://$MODULE_DIR$/Pathways Export 20200512" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
+      <excludeFolder url="file://$MODULE_DIR$/Data" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

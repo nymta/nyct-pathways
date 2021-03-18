@@ -7,20 +7,26 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="nyct-pathways-transformer-cli" />
         <module name="nyct-pathways-transformer" />
+        <module name="nyct-pathways-transformer-cli" />
+        <module name="nyct-pathways-crm" />
+        <module name="nyct-pathways-validator" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="nyct-pathways" target="1.5" />
-      <module name="nyct-pathways-transformer" target="11" />
-      <module name="nyct-pathways-transformer-cli" target="11" />
+      <module name="nyct-pathways-crm" target="15" />
+      <module name="nyct-pathways-transformer" target="15" />
+      <module name="nyct-pathways-transformer-cli" target="15" />
+      <module name="nyct-pathways-validator" target="15" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="nyct-pathways-crm" options="-Xlint:all" />
       <module name="nyct-pathways-transformer" options="-Xlint:all" />
       <module name="nyct-pathways-transformer-cli" options="-Xlint:all" />
+      <module name="nyct-pathways-validator" options="-Xlint:all" />
     </option>
   </component>
 </project>

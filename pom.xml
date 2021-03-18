@@ -11,11 +11,13 @@
     <modules>
         <module>nyct-pathways-transformer</module>
         <module>nyct-pathways-transformer-cli</module>
+        <module>nyct-pathways-validator</module>
+        <module>nyct-pathways-crm</module>
     </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <onebusaway-gtfs-modules.version>1.3.67-SNAPSHOT</onebusaway-gtfs-modules.version>
+        <onebusaway-gtfs-modules.version>1.3.93</onebusaway-gtfs-modules.version>
         <slf4j.version>1.7.26</slf4j.version>
     </properties>
 
@@ -44,21 +46,21 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </repository>
     </repositories>
 
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.2</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                     <configuration>
-                        <source>11</source>
-                        <target>11</target>
+                        <source>15</source>
+                        <target>15</target>
                         <compilerArgs>
                             <arg>-Xlint:all</arg>
                         </compilerArgs>
@@ -68,7 +70,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-shade-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.2.4</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -79,12 +81,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson</groupId>
                 <artifactId>jackson-bom</artifactId>
-                <version>2.11.0</version>
+                <version>2.12.1</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
 
-            <!--
             <dependency>
                 <groupId>org.onebusaway</groupId>
                 <artifactId>onebusaway-gtfs</artifactId>
@@ -108,60 +109,17 @@
                 <artifactId>onebusaway-csv-entities</artifactId>
                 <version>1.1.7-SNAPSHOT</version>
             </dependency>
-            -->
-
-            <dependency>
-                <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
-                <artifactId>onebusaway-gtfs</artifactId>
-                <version>integration-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.onebusaway</groupId>
-                        <artifactId>onebusaway-csv-entities</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
-                <artifactId>onebusaway-gtfs-transformer</artifactId>
-                <version>integration-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.onebusaway</groupId>
-                        <artifactId>onebusaway-collections</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.nymta.onebusaway-gtfs-modules</groupId>
-                <artifactId>onebusaway-gtfs-transformer-cli</artifactId>
-                <version>integration-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.nymta</groupId>
-                <artifactId>onebusaway-csv-entities</artifactId>
-                <version>integration-SNAPSHOT</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.onebusaway</groupId>
-                <artifactId>onebusaway-collections</artifactId>
-                <version>1.2.1</version>
-            </dependency>
 
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>29.0-jre</version>
+                <version>30.1-jre</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.10</version>
+                <version>3.11</version>
             </dependency>
 
             <dependency>
@@ -179,16 +137,29 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.12</version>
+                <version>1.18.18</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>19.0.0</version>
+                <version>20.1.0</version>
                 <scope>compile</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.locationtech.jts</groupId>
+                <artifactId>jts-core</artifactId>
+                <version>1.18.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>4.6.1</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 

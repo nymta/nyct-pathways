@@ -1,4 +1,4 @@
-package com.nyct.dos.tpc.pathways;
+package com.nyct.dos.tpc.pathways.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.StdConverter;

@@ -8,9 +8,9 @@ import com.nyct.dos.tpc.pathways.types.PathwayType;
 import lombok.Data;
 
 @Data
-@JsonIgnoreProperties(value={"ADDITIONAL_STAIRCASES", "ADDITIONAL_STAIRCASES2", "ADDITIONAL_STAIRCASES3", "Dir",
+@JsonIgnoreProperties(value = {"ADDITIONAL_STAIRCASES", "ADDITIONAL_STAIRCASES2", "ADDITIONAL_STAIRCASES3", "Dir",
         "mechnical_stair_count", "traversal_time", "is_bidirectional", "STAIR_ID_1", "S_COUNT_1",
-        "STAIR_ID_2", "S_COUNT_2", "STAIR_ID_3", "S_COUNT_3", "STAIR_ID_4","S_COUNT_4", "stair_count"})
+        "STAIR_ID_2", "S_COUNT_2", "STAIR_ID_3", "S_COUNT_3", "STAIR_ID_4", "S_COUNT_4", "stair_count"})
 public class Connection {
 
     public static final String FILENAME = "CONNECTIONS_REC.csv";
@@ -35,7 +35,7 @@ public class Connection {
     PathwayType pathwayType;
 
     @JsonProperty("PATHWAYID")
-    String pathwayId;
+    int pathwayId;
     @JsonProperty("STAIR2ID")
     int stair2Id;
     @JsonProperty("STAIR3ID")
