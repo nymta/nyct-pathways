@@ -10,6 +10,7 @@ import com.nyct.dos.tpc.pathways.model.referencedata.ReferenceStationComplex;
 import org.apache.commons.lang3.tuple.Pair;
 import org.locationtech.jts.geom.Point;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+@Command(name = "nyct-pathways-crm-transformer", mixinStandardHelpOptions = true, version = "1.0")
 public class CrmTransformerCli implements Callable<Integer> {
 
     @Parameters(index = "0")

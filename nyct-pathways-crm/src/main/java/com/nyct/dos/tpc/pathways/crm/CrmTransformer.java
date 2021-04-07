@@ -58,6 +58,7 @@ public class CrmTransformer {
                 .map(ReferenceStation::getDaytimeRoutes)
                 .flatMap(s -> Arrays.stream(s.split(" ")))
                 .distinct()
+                .sorted()
                 .collect(toImmutableList());
     }
 
@@ -71,7 +72,7 @@ public class CrmTransformer {
         };
     }
 
-    private CrmLines buildLines() {
+    private List<CrmLine> buildLines() {
         Map<String, ListMultimap<NycBorough, CrmStation>> stationsByBoroughAndLine = new HashMap<>();
 
         for (StationComplex sc : pd.getStationComplexes()) {
@@ -81,13 +82,12 @@ public class CrmTransformer {
             NycBorough borough = boroughForStationComplex(stationComplexId);
             List<String> lines = linesForStationComplex(stationComplexId);
 
-
             for (String line : lines) {
                 stationsByBoroughAndLine.computeIfAbsent(line, k -> ArrayListMultimap.create()).put(borough, crmStation);
             }
         }
 
-        ImmutableList<CrmLine> crmLines = stationsByBoroughAndLine.entrySet().stream()
+        List<CrmLine> crmLines = stationsByBoroughAndLine.entrySet().stream()
                 .map(e1 -> {
                     String line = e1.getKey();
                     ListMultimap<NycBorough, CrmStation> stationsByBorough = e1.getValue();
@@ -97,15 +97,16 @@ public class CrmTransformer {
                                 List<CrmStation> stations = ImmutableList.copyOf(e2.getValue());
 
                                 return new CrmBorough(nameForBorough(borough), stations);
-                            }).collect(toImmutableList());
+                            })
+                            .collect(toImmutableList());
 
                     return new CrmLine(line, boroughs);
                 }).collect(toImmutableList());
 
-        return new CrmLines(crmLines);
+        return crmLines;
     }
 
-    private String directionForPlatform(Platform plat) {
+    private ServiceDirection directionForPlatform(Platform plat) {
         EnumSet<ServiceDirection> serviceDirections = Stream.of(plat.getServiceDirection1(), plat.getServiceDirection2())
                 .filter(Objects::nonNull)
                 .collect(Collectors.toCollection(() -> EnumSet.noneOf(ServiceDirection.class)));
@@ -125,7 +126,11 @@ public class CrmTransformer {
             serviceDirections.add(BOTH);
         }
 
-        return switch (Iterables.getOnlyElement(serviceDirections)) {
+        return Iterables.getOnlyElement(serviceDirections);
+    }
+
+    private String directionLabelForPlatform(Platform plat) {
+        return switch (directionForPlatform(plat)) {
             case NORTHBOUND -> "Northbound";
             case SOUTHBOUND -> "Southbound";
             case BOTH -> "Both directions";
@@ -160,25 +165,46 @@ public class CrmTransformer {
         };
     }
 
-    private String directionLabelForPlatform(Platform plat) {
+    private String destinationNameForPlatform(Platform plat) {
         Collection<PlatformStopMapping> platformStopMappings = platformStopMapping.get(ImmutablePair.of(plat.getStationComplexId(), plat.getNyctPlatformId()));
 
-        return platformStopMappings.stream().flatMap(psm -> {
-            ReferenceStation rs = referenceStations.get(psm.getGtfsParentStopId());
-            return switch (psm.getDirection()) {
-                case NORTHBOUND -> Stream.of(rs.getNorthDirectionLabel());
-                case SOUTHBOUND -> Stream.of(rs.getSouthDirectionLabel());
-                case BOTH -> Stream.of(rs.getNorthDirectionLabel(), rs.getSouthDirectionLabel());
-            };
-        })
+        return platformStopMappings.stream()
+                .flatMap(psm -> {
+                    ReferenceStation rs = referenceStations.get(psm.getGtfsParentStopId());
+                    return switch (psm.getDirection()) {
+                        case NORTHBOUND -> Stream.of(rs.getNorthDirectionLabel());
+                        case SOUTHBOUND -> Stream.of(rs.getSouthDirectionLabel());
+                        case BOTH -> Stream.of(rs.getNorthDirectionLabel(), rs.getSouthDirectionLabel());
+                    };
+                })
                 .filter(Objects::nonNull)
                 .filter(s -> !s.isBlank())
                 .distinct()
                 .collect(Collectors.joining(", "));
     }
 
-    private CrmStationDetails buildStationDetails() {
+    private String nameForPlatform(Platform plat) {
+        String lines = Arrays.stream(plat.getLines().split(" "))
+                .map(s -> s.replace("(", "").replace(")", "").replace("x", ""))
+                .distinct()
+                .sorted()
+                .collect(Collectors.joining(" "));
+        ServiceDirection direction = directionForPlatform(plat);
+        String destinationName = destinationNameForPlatform(plat);
 
+        String separator = destinationName.startsWith("Uptown") || destinationName.startsWith("Downtown") ? " " : " to ";
+
+        if (destinationName.isBlank()) {
+            return "Train terminates here";
+        } else {
+            return switch (direction) {
+                case NORTHBOUND, SOUTHBOUND -> lines + separator + destinationName;
+                case BOTH -> lines + " platform";
+            };
+        }
+    }
+
+    private List<CrmStationDetail> buildStationDetails() {
         List<CrmStationDetail> crmStationDetails = pd.getStationComplexes().stream().map(sc -> {
             int stationComplexId = sc.getStationComplexId();
 
@@ -191,9 +217,10 @@ public class CrmTransformer {
                     .map(plat -> new CrmPlatform(
                             plat.getNyctPlatformId(),
                             plat.getLines(),
-                            directionForPlatform(plat),
+                            directionLabelForPlatform(plat),
                             serviceForPlatform(plat),
-                            directionLabelForPlatform(plat)
+                            destinationNameForPlatform(plat),
+                            nameForPlatform(plat)
                     ))
                     .collect(toImmutableList());
 
@@ -219,7 +246,7 @@ public class CrmTransformer {
             );
         }).collect(toImmutableList());
 
-        return new CrmStationDetails(crmStationDetails);
+        return crmStationDetails;
     }
 
     public void run() throws IOException {
@@ -227,8 +254,13 @@ public class CrmTransformer {
 
         ObjectWriter objectWriter = mapper.writerWithDefaultPrettyPrinter();
 
-        objectWriter.writeValue(outputPath.resolve("Obj-line-station.json").toFile(), buildLines());
-        objectWriter.writeValue(outputPath.resolve("Obj-stations-details.json").toFile(), buildStationDetails());
+        objectWriter.writeValue(
+                outputPath.resolve("Obj-line-station.json").toFile(),
+                ImmutableMap.of(
+                        "stations", buildStationDetails(),
+                        "lines", buildLines()
+                )
+        );
 
     }
 

@@ -9,4 +9,5 @@ public class CrmPlatform {
     String bound;
     String service;
     String label;
+    String name;
 }
