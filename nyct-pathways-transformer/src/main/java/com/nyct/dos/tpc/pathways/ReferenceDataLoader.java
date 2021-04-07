@@ -19,16 +19,15 @@ import org.locationtech.jts.geom.PrecisionModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.google.common.collect.ImmutableList.toImmutableList;
 import static com.google.common.collect.ImmutableMap.toImmutableMap;
 import static com.google.common.collect.ImmutableSetMultimap.toImmutableSetMultimap;
+import static java.util.stream.Collectors.*;
 import static org.locationtech.jts.geom.PrecisionModel.FLOATING;
 
 @UtilityClass
@@ -37,9 +36,7 @@ public class ReferenceDataLoader {
 
     private final static CsvSchema BOOTSTRAP_SCHEMA = CsvSchema.emptySchema()
             .withHeader();
-
     private final static ObjectMapper MAPPER = new CsvMapper();
-
     private final static GeometryFactory GEOMETRY_FACTORY = new GeometryFactory(new PrecisionModel(FLOATING), 4326);
 
     public static Multimap<Pair<Integer, String>, PlatformStopMapping> loadPlatformStopMapping(File platformStopMappingFile) throws IOException {
@@ -90,26 +87,16 @@ public class ReferenceDataLoader {
     }
 
     public static Map<Integer, Point> buildStationComplexCentroids(Collection<ReferenceStation> stations, Collection<ReferenceStationComplex> stationComplexes) {
-        Collector<Point, ArrayList<Point>, Point> centroidCollector = Collector.of(
-                ArrayList::new,
-                ArrayList::add,
-                (left, right) -> {
-                    left.addAll(right);
-                    return left;
-                },
-                l -> GEOMETRY_FACTORY.createMultiPoint(l.toArray(Point[]::new)).getCentroid()
-        );
-
-        return stations.stream().collect(Collectors.groupingBy(ReferenceStation::getStationComplexId,
-
-                Collectors.mapping(s -> GEOMETRY_FACTORY.createPoint(new CoordinateXY(s.getGtfsLongitude(), s.getGtfsLatitude())),
-                        centroidCollector
-                )
-
-
-        ));
-
-
+        return stations.stream()
+                .collect(groupingBy(ReferenceStation::getStationComplexId,
+                        mapping(
+                                s -> GEOMETRY_FACTORY.createPoint(new CoordinateXY(s.getGtfsLongitude(), s.getGtfsLatitude())),
+                                collectingAndThen(
+                                        toImmutableList(),
+                                        l -> GEOMETRY_FACTORY.createMultiPoint(l.toArray(Point[]::new)).getCentroid()
+                                )
+                        )
+                ));
     }
 
 }
